@@ -32,7 +32,11 @@ class RecordLinksViewHelper extends AbstractViewHelper
     public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext): string
     {
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-        $returnUri = $uriBuilder->buildUriFromRoute($arguments['module'], $_GET);
+        if (version_compare(TYPO3_branch, '9.5', '>=')) {
+            $returnUri = $uriBuilder->buildUriFromRoute($arguments['module'], $_GET);
+        } else {
+            $returnUri = $uriBuilder->buildUriFromModule($arguments['module'], $_GET);
+        }
 
         switch ($arguments['command']) {
             case 'edit':
