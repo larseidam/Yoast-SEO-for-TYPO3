@@ -3,10 +3,19 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/db_layout.php']['drawHeade
     = \YoastSeoForTypo3\YoastSeo\Backend\PageLayoutHeader::class . '->render';
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-postProcess'][]
     = \YoastSeoForTypo3\YoastSeo\StructuredData\StructuredDataProviderManager::class . '->render';
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-postProcess'][]
-    = \YoastSeoForTypo3\YoastSeo\Frontend\AdditionalPreviewData::class . '->render';
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['usePageCache'][]
-    = \YoastSeoForTypo3\YoastSeo\Frontend\UsePageCache::class;
+
+if (version_compare(TYPO3_branch, '9.5', '<')) {
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-postProcess'][] =
+        \YoastSeoForTypo3\YoastSeo\Canonical\CanonicalGenerator::class . '->generate';
+
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-postProcess'][]
+        = \YoastSeoForTypo3\YoastSeo\Frontend\PageTitle::class . '->render';
+} else {
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_pagerenderer.php']['render-postProcess'][]
+	    = \YoastSeoForTypo3\YoastSeo\Frontend\AdditionalPreviewData::class . '->render';
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['usePageCache'][]
+	    = \YoastSeoForTypo3\YoastSeo\Frontend\UsePageCache::class;
+}
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTypoScriptConstants(
     'config.yoast_seo.fe_preview_type = '
